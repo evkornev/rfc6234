@@ -1,12 +1,14 @@
 # Makefile for rfc6234 code examples
 
-BINS += shatest
+LIB += lhkdf.so
 DEPS = Makefile
-
+CFLAGS += -fPIC
+CFLAGS += -shared
+LDFLAGS += -I/usr/include/lua5.3
 # Prettifiers
 LINK    = @echo "* Linking $@"; $(CC) $(CFLAGS) $(LDFLAGS)
 
-all: ${BINS}
+all: ${LIB}
 	@echo "* All Done"
 
 OBJS := $(shell ls *.c | sed 's/\.c/.o/' | sed 's/ /\n/g' | sort | uniq | tr '\n' ' ')
@@ -22,7 +24,7 @@ clean:
 	@echo "* Cleansing"
 	@rm -rf $(BINS) *.o *.so *.lo *.la *.slo *.loT *.d
 
-shatest: $(DEPS) $(OBJS)
+lhkdf.so: $(DEPS) $(OBJS)
 	$(LINK) -o $@ $(OBJS)
 
 %.o: %.c $(DEPS)
