@@ -13,10 +13,12 @@ SHAversion version = SHA256;
 static int extract(lua_State *L){
   // by now let's support only SHA256 hash func
   int ret = 0;
-  const char *salt = luaL_checkstring(L, 1);
-  const char *msg = luaL_checkstring(L, 2);
+  size_t salt_len = 0;
+  size_t msg_len = 0;
+  const char *salt = luaL_checklstring(L, 1, &salt_len);
+  const char *msg = luaL_checklstring(L, 2, &msg_len);
   char secret[SHA256HashSize] = {0,};
-  ret = hkdfExtract(version, salt, strlen(salt), msg, strlen(msg), secret);
+  ret = hkdfExtract(version, salt, salt_len, msg, msg_len, secret);
   if (ret == 0){
       lua_pushlstring(L, secret, SHA256HashSize);
       return 1;
